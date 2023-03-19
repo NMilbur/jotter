@@ -1,0 +1,32 @@
+name: Lint and Standards
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Lint and check standards
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install packages
+
+        uses: Borales/actions-yarn@v4.2.0
+        with:
+          cmd: install
+          dir: "client"
+
+      - name: Prettier
+        uses: Borales/actions-yarn@v4.2.0
+        with:
+          cmd: format
+          dir: "client"
+
+      - name: Lint
+        uses: Borales/actions-yarn@v4.2.0
+        with:
+          cmd: lint
+          dir: "client"
