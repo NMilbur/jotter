@@ -1,9 +1,10 @@
 # Journal
 
 ## Description
-A page that takes user input and puts the data out into the screen. It will take in code as well and display the output.
+A page that takes user input and outputs on the screen (Jupyter notebook-like). It will take in code as well and display the output.
 
-## Expected Outcomes
+## Expected Behavior
+* Users can write code and execute it.
+* Users can write notes.
 * Prevent XSS
 * Prevent injection attacks
-* Only working code will compile
