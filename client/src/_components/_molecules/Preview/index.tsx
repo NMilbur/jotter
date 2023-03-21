@@ -30,7 +30,12 @@ const Preview = ({ code }: PreviewProps) => {
 
   useEffect(() => {
     iframeRef.current.srcdoc = html;
-    iframeRef.current.contentWindow.postMessage(code, "*");
+
+    const timer = setTimeout(() => {
+      iframeRef.current.contentWindow.postMessage(code, "*");
+    }, 50);
+
+    return () => clearTimeout(timer);
   }, [code]);
 
   return (
