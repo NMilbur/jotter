@@ -3,6 +3,7 @@ import { useState } from "react";
 import CodeEditor from "_components/_molecules/CodeEditor";
 import Preview from "_components/_molecules/Preview";
 import bundle from "_helpers/bundler";
+import Resizable from "_components/_atoms/Resizable";
 
 const CodeCell = () => {
   const [input, setInput] = useState("");
@@ -14,15 +15,18 @@ const CodeCell = () => {
   };
 
   return (
-    <div>
-      <CodeEditor initialValue="const greeting = 'Hello!';" onChange={(value) => setInput(value)} />
+    <Resizable orientation="vertical">
+      <div style={{ height: "100%", display: "flex", flexDirection: "row" }}>
+        <Resizable orientation="horizontal">
+          <CodeEditor
+            initialValue="const greeting = 'Hello!';"
+            onChange={(value) => setInput(value)}
+          />
+        </Resizable>
 
-      <div>
-        <button onClick={onClick}>Submit</button>
+        <Preview code={code} />
       </div>
-
-      <Preview code={code} />
-    </div>
+    </Resizable>
   );
 };
 

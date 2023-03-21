@@ -54,5 +54,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "peerDependencies": {
+    "@types/react-resizable": "3.0.2",
+    "react-resizable": "3.0.4"
   }
 }
