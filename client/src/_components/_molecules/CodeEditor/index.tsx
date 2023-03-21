@@ -49,7 +49,7 @@ const CodeEditor = ({ initialValue = "// Hello and Welcome!", onChange }: CodeEd
       <MonacoEditor
         value={initialValue}
         language="javascript"
-        height="500px"
+        height="100%"
         theme="dark"
         options={{
           wordWrap: "on",
