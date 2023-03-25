@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { v4 as uuidv4 } from "uuid";
 import { Cell } from "_state/cells";
+import { CELL_ACTIONS } from "_state/constants";
 
 interface CellState {
   loading: boolean;
@@ -23,15 +24,15 @@ const cellSlice = createSlice({
   name: "cell",
   initialState,
   reducers: {
-    cellUpdated: (state: CellState, action) => {
+    [CELL_ACTIONS.updateCell]: (state: CellState, action) => {
       const { id, content } = action.payload;
       state.data[id].content = content;
     },
-    cellDeleted: (state: CellState, action) => {
+    [CELL_ACTIONS.deleteCell]: (state: CellState, action) => {
       delete state.data[action.payload];
-      state.order.filter((id) => id !== action.payload);
+      state.order = state.order.filter((id) => id !== action.payload);
     },
-    cellMoved: (state: CellState, action) => {
+    [CELL_ACTIONS.moveCell]: (state: CellState, action) => {
       const { direction } = action.payload;
       const idx = state.order.findIndex((id) => id === action.payload.id);
       const targetIdx = direction === "up" ? idx - 1 : idx + 1;
@@ -41,7 +42,7 @@ const cellSlice = createSlice({
       state.order[idx] = state.order[targetIdx];
       state.order[targetIdx] = action.payload.id;
     },
-    cellInsertedBefore: (state: CellState, action) => {
+    [CELL_ACTIONS.insertCellAfter]: (state: CellState, action) => {
       const cell: Cell = {
         content: "",
         type: action.payload.type,
@@ -53,14 +54,14 @@ const cellSlice = createSlice({
       const foundIdx = state.order.findIndex((id) => id === action.payload.id);
 
       if (foundIdx < 0) {
-        state.order.push(cell.id);
+        state.order.unshift(cell.id);
       } else {
-        state.order.splice(foundIdx, 0, cell.id);
+        state.order.splice(foundIdx + 1, 0, cell.id);
       }
     },
   },
 });
 
-export const { cellUpdated, cellDeleted, cellMoved, cellInsertedBefore } = cellSlice.actions;
+export const { updateCell, deleteCell, moveCell, insertCellAfter } = cellSlice.actions;
 
 export default cellSlice.reducer;
