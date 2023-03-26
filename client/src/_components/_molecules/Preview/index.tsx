@@ -1,5 +1,5 @@
 import "./index.css";
-import { IframeHTMLAttributes, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 const html = `
   <html>

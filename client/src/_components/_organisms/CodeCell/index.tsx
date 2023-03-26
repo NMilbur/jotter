@@ -8,6 +8,7 @@ import { Cell, completeBundle, startBundle, updateCell } from "_state";
 import { useDispatch } from "react-redux";
 import { useTypedSelector } from "_hooks/useTypedSelector";
 import bundler from "_helpers/bundler";
+import { useCumulativeCode } from "_hooks/useCumulativeCode";
 
 interface CodeCellProps {
   cell: Cell;
@@ -16,6 +17,7 @@ interface CodeCellProps {
 const CodeCell = ({ cell: { content, id: cellId } }: CodeCellProps) => {
   const dispatch = useDispatch();
   const bundle = useTypedSelector((state) => state.bundles[cellId]);
+  const cumulativeCode = useCumulativeCode(cellId);
 
   const createBundle = async (cellId: string, input: string) => {
     dispatch(startBundle({ cellId }));
@@ -35,16 +37,16 @@ const CodeCell = ({ cell: { content, id: cellId } }: CodeCellProps) => {
 
   useEffect(() => {
     if (!bundle) {
-      createBundle(cellId, content);
+      createBundle(cellId, cumulativeCode);
       return;
     }
 
     const timer = setTimeout(async () => {
-      createBundle(cellId, content);
+      createBundle(cellId, cumulativeCode);
     }, 750);
 
     return () => clearTimeout(timer);
-  }, [content, cellId]);
+  }, [cumulativeCode, cellId]);
 
   return (
     <Resizable orientation="vertical">
