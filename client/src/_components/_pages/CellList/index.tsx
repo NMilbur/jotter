@@ -1,3 +1,4 @@
+import "./index.css";
 import AddCell from "_components/_molecules/AddCell";
 import CellListItem from "_components/_templates/CellListItem";
 import { useTypedSelector } from "_hooks/useTypedSelector";
@@ -14,7 +15,7 @@ const CellList = () => {
   ));
 
   return (
-    <div>
+    <div className="cell-list">
       <AddCell forceVisible={cells.length === 0} prevCellId={null} />
       {renderedCells}
     </div>
