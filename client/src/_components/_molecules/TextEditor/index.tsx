@@ -1,10 +1,16 @@
 import "./index.css";
 import MDEditor from "@uiw/react-md-editor";
+import { Cell, updateCell } from "_state";
 import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 
-const TextEditor = () => {
+interface TextEditorProps {
+  cell: Cell;
+}
+
+const TextEditor = ({ cell: { content, id: cellId } }: TextEditorProps) => {
+  const dispatch = useDispatch();
   const [editMode, setEditMode] = useState(false);
-  const [value, setValue] = useState("# Hello!");
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -24,7 +30,10 @@ const TextEditor = () => {
   if (editMode) {
     return (
       <div className="text-editor" ref={ref}>
-        <MDEditor value={value} onChange={(input) => setValue(input || "")} />
+        <MDEditor
+          value={content}
+          onChange={(input) => dispatch(updateCell({ id: cellId, content: input || "" }))}
+        />
       </div>
     );
   }
@@ -32,7 +41,7 @@ const TextEditor = () => {
   return (
     <div className="text-editor card" onClick={() => setEditMode(true)}>
       <div className="card-content">
-        <MDEditor.Markdown source={value} />
+        <MDEditor.Markdown source={content || "Click to edit"} />
       </div>
     </div>
   );

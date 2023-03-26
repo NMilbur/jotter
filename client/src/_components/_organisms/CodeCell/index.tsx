@@ -1,36 +1,72 @@
-import { useEffect, useState } from "react";
+import "./index.css";
+import { useEffect } from "react";
 
 import CodeEditor from "_components/_molecules/CodeEditor";
 import Preview from "_components/_molecules/Preview";
-import bundle from "_helpers/bundler";
 import Resizable from "_components/_atoms/Resizable";
+import { Cell, completeBundle, startBundle, updateCell } from "_state";
+import { useDispatch } from "react-redux";
+import { useTypedSelector } from "_hooks/useTypedSelector";
+import bundler from "_helpers/bundler";
 
-const CodeCell = () => {
-  const [input, setInput] = useState("");
-  const [code, setCode] = useState("");
-  const [error, setError] = useState("");
+interface CodeCellProps {
+  cell: Cell;
+}
+
+const CodeCell = ({ cell: { content, id: cellId } }: CodeCellProps) => {
+  const dispatch = useDispatch();
+  const bundle = useTypedSelector((state) => state.bundles[cellId]);
+
+  const createBundle = async (cellId: string, input: string) => {
+    dispatch(startBundle({ cellId }));
+
+    const result = await bundler(input);
+
+    dispatch(
+      completeBundle({
+        cellId,
+        bundle: {
+          code: result.code,
+          err: result.err,
+        },
+      })
+    );
+  };
 
   useEffect(() => {
+    if (!bundle) {
+      createBundle(cellId, content);
+      return;
+    }
+
     const timer = setTimeout(async () => {
-      const output = await bundle(input);
-      setCode(output.code);
-      setError(output.err);
-    }, 1000);
+      createBundle(cellId, content);
+    }, 750);
 
     return () => clearTimeout(timer);
-  }, [input]);
+  }, [content, cellId]);
 
   return (
     <Resizable orientation="vertical">
-      <div style={{ height: "100%", display: "flex", flexDirection: "row" }}>
+      <div style={{ height: "calc(100% - 10px)", display: "flex", flexDirection: "row" }}>
         <Resizable orientation="horizontal">
           <CodeEditor
-            initialValue="const greeting = 'Hello!';"
-            onChange={(value) => setInput(value)}
+            initialValue={content}
+            onChange={(value) => dispatch(updateCell({ id: cellId, content: value }))}
           />
         </Resizable>
 
-        <Preview code={code} error={error} />
+        <div className="preview-wrapper">
+          {!bundle || bundle.loading ? (
+            <div className="progress-cover">
+              <progress className="progress is-small is-primary" max="100">
+                Loading
+              </progress>
+            </div>
+          ) : (
+            <Preview code={bundle.code} error={bundle.err} />
+          )}
+        </div>
       </div>
     </Resizable>
   );
