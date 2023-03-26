@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 import cellSlice, { insertCellAfter } from "./cells/cellSlice";
-import { CELL_ACTIONS } from "./constants";
+import bundleSlice from "./bundles/bundleSlice";
 
-export const store = configureStore({ reducer: { cells: cellSlice } });
+export const store = configureStore({ reducer: { cells: cellSlice, bundles: bundleSlice } });
 
 export type RootState = ReturnType<typeof store.getState>;
 
